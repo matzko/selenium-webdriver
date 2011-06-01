@@ -50,6 +50,26 @@ class WebElement extends SearchContext
 		}
 	}
 
+	public function getValue()
+	{
+		$url = $this->_request_url . '/element/' . $this->session_element_id . '/value';
+		$response = json_decode( $this->_get_request( $url ) );
+		if ( 
+			isset( $response->value->class ) &&
+			in_array( $response->value->class, array(
+				'org.openqa.selenium.StaleElementReferenceException',
+			) )
+		) {
+			if ( ! empty( $response->value->localizedMessage ) ) {
+				throw new Exception( $response->value->localizedMessage );
+			}
+		}
+
+		if ( isset( $response->value ) ) {
+			return $response->value;
+		}
+	}
+
 	public function isDisplayed()
 	{
 		$url = $this->_request_url . '/element/' . $this->session_element_id . '/displayed';
