@@ -43,6 +43,24 @@ class SearchContext
 		return $response;
 	}
 
+	protected function _get_request( $url = '' )
+	{
+		if ( empty( $url ) ) {
+			throw new InvalidArgumentException( 'Invalid request: No get URL is set.' );
+		}
+
+		$session = curl_init( $url );
+		curl_setopt($session, CURLOPT_HTTPHEADER, array("application/json;charset=UTF-8"));
+		curl_setopt($session, CURLOPT_HEADER, false);
+		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($session, CURLOPT_FOLLOWLOCATION, true);
+
+		$response = trim( curl_exec( $session ) );
+		curl_close( $session );
+
+		return $response;
+	}
+
 	protected function _post_request( $url = '', $args = array(), $force_json = true )
 	{
 		$force_json = (bool) $force_json;
